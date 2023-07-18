@@ -61,6 +61,7 @@ class OrderSerializer(serializers.ModelSerializer):
         data['billiard'] = BilliardSerializer(instance.billiard).data
         data['sauna'] = SaunaSerializer(instance.sauna).data
         data['training'] = TrainingSerializer(instance.training).data
+        data['subscription'] = SubscriptionSerializer(instance.subscription).data
         return data
 
 
