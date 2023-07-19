@@ -1,6 +1,6 @@
 from django.db.models import Q
 from django.utils import timezone
-from datetime import timedelta, date
+from datetime import timedelta, date, datetime
 
 from rest_framework import status, generics
 from rest_framework.decorators import api_view
@@ -14,23 +14,6 @@ from .serializers import PoolSerializer, BilliardSerializer, SaunaSerializer, Tr
 def pool_list(request):
     if request.method == 'GET':
         pools = Pool.objects.all()
-
-        # Filter by day
-        day = request.query_params.get('day')
-        if day:
-            pools = pools.filter(created_at__date=day)
-
-        # Filter by 7 days
-        seven_days = request.query_params.get('seven_days')
-        if seven_days:
-            start_date = timezone.now().date() - timedelta(days=7)
-            pools = pools.filter(created_at__date__gte=start_date)
-
-        # Filter by month
-        month = request.query_params.get('month')
-        if month:
-            pools = pools.filter(created_at__month=month)
-
         serializer = PoolSerializer(pools, many=True)
         return Response(serializer.data)
     elif request.method == 'POST':
@@ -66,23 +49,6 @@ def pool_detail(request, pk):
 def billiard_list(request):
     if request.method == 'GET':
         billiards = Billiard.objects.all()
-
-        # Filter by day
-        day = request.query_params.get('day')
-        if day:
-            billiards = billiards.filter(created_at__date=day)
-
-        # Filter by 7 days
-        seven_days = request.query_params.get('seven_days')
-        if seven_days:
-            start_date = timezone.now().date() - timedelta(days=7)
-            billiards = billiards.filter(created_at__date__gte=start_date)
-
-        # Filter by month
-        month = request.query_params.get('month')
-        if month:
-            billiards = billiards.filter(created_at__month=month)
-
         serializer = BilliardSerializer(billiards, many=True)
         return Response(serializer.data)
     elif request.method == 'POST':
@@ -118,23 +84,6 @@ def billiard_detail(request, pk):
 def sauna_list(request):
     if request.method == 'GET':
         saunas = Sauna.objects.all()
-
-        # Filter by day
-        day = request.query_params.get('day')
-        if day:
-            saunas = saunas.filter(created_at__date=day)
-
-        # Filter by 7 days
-        seven_days = request.query_params.get('seven_days')
-        if seven_days:
-            start_date = timezone.now().date() - timedelta(days=7)
-            saunas = saunas.filter(created_at__date__gte=start_date)
-
-        # Filter by month
-        month = request.query_params.get('month')
-        if month:
-            saunas = saunas.filter(created_at__month=month)
-
         serializer = SaunaSerializer(saunas, many=True)
         return Response(serializer.data)
     elif request.method == 'POST':
@@ -170,23 +119,6 @@ def sauna_detail(request, pk):
 def training_list(request):
     if request.method == 'GET':
         trainings = Training.objects.all()
-
-        # Filter by day
-        day = request.query_params.get('day')
-        if day:
-            trainings = trainings.filter(created_at__date=day)
-
-        # Filter by 7 days
-        seven_days = request.query_params.get('seven_days')
-        if seven_days:
-            start_date = timezone.now().date() - timedelta(days=7)
-            trainings = trainings.filter(created_at__date__gte=start_date)
-
-        # Filter by month
-        month = request.query_params.get('month')
-        if month:
-            trainings = trainings.filter(created_at__month=month)
-
         serializer = TrainingSerializer(trainings, many=True)
         return Response(serializer.data)
     elif request.method == 'POST':
@@ -223,21 +155,32 @@ def order_list(request):
     if request.method == 'GET':
         orders = Order.objects.all()
 
-        # Filter by day
         day = request.query_params.get('day')
+        seven_days = request.query_params.get('seven_days')
+        month = request.query_params.get('month')
+        year = request.query_params.get('year')
+        all_orders = request.query_params.get('all')
+
+        # Filter by day
         if day:
-            orders = orders.filter(created_at__date=day)
+            orders = orders.filter(date_entered__date=day)
 
         # Filter by 7 days
-        seven_days = request.query_params.get('seven_days')
         if seven_days:
-            start_date = timezone.now().date() - timedelta(days=7)
-            orders = orders.filter(created_at__date__gte=start_date)
+            start_date = datetime.now().date() - timedelta(days=7)
+            orders = orders.filter(date_entered__date__gte=start_date)
 
-            # Filter by month
-        month = request.query_params.get('month')
+        # Filter by month
         if month:
-            orders = orders.filter(created_at__month=month)
+            orders = orders.filter(date_entered__month=month)
+
+        # Filter by year
+        if year:
+            orders = orders.filter(date_entered__year=year)
+
+        # Get all orders
+        if all_orders:
+            orders = orders.all()
 
         serializer = OrderSerializer(orders, many=True)
         return Response(serializer.data)
@@ -248,6 +191,7 @@ def order_list(request):
             serializer.save()
             return Response(serializer.data, status=201)
         return Response(serializer.errors, status=400)
+
 
 @api_view(['GET', 'PUT', 'DELETE'])
 def order_detail(request, pk):
