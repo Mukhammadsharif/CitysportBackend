@@ -29,6 +29,7 @@ DEBUG = True
 ALLOWED_HOSTS = [
     "*",
     "https://mukhammadsharif.pythonanywhere.com",
+    "http://5.182.26.41/",
 ]
 
 CORS_ALLOW_CREDENTIALS = True
@@ -41,6 +42,7 @@ CORS_ORIGIN_WHITELIST = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
     "https://mukhammadsharif.pythonanywhere.com",
+    "http://5.182.26.41/",
 ]
 
 CORS_ALLOWED_ORIGINS = [
@@ -49,6 +51,7 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
     "https://mukhammadsharif.pythonanywhere.com",
+    "http://5.182.26.41/",
 ]
 
 CORS_ALLOWED_ORIGIN_REGEXES = [
