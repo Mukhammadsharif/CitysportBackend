@@ -30,7 +30,6 @@ class UserLogin(APIView):
     ##
     def post(self, request, *args, **kwargs):
         data = request.data
-        print(data)
         assert validate_email(data)
         assert validate_password(data)
         serializer = UserLoginSerializer(data=data)
