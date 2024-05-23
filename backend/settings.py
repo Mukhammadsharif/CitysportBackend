@@ -30,6 +30,7 @@ ALLOWED_HOSTS = [
     "https://citysportadmin.uz",
     "http://citysportadmin.uz",
     "http://localhost:3000",
+    "mukhammadsharif.pythonanywhere.com",
 ]
 
 CORS_ALLOW_CREDENTIALS = True
